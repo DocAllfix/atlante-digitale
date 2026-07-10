@@ -114,6 +114,7 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --font-prompt: 'Prompt', sans-serif;
     --font-outfit: 'Outfit', sans-serif;
+    --font-poppins: 'Poppins', sans-serif;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -189,17 +190,12 @@ html, body {
 .animate-card-pop { animation: card-pop 0.28s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .animate-sheet-up { animation: sheet-up 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
 
-/* Richiamo di scroll nella landing e cursore del testo a macchina da scrivere */
+/* Richiamo di scroll nella landing */
 @keyframes scroll-bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
 }
-@keyframes caret-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
 .animate-scroll-bounce { animation: scroll-bounce 1.6s ease-in-out infinite; }
-.animate-caret { animation: caret-blink 0.9s step-end infinite; }
 
 /* Focus visibile e coerente per la navigazione da tastiera */
 :focus-visible {

@@ -67,7 +67,8 @@ module.exports = {
   			display: ['var(--font-display)'],
   			mono: ['var(--font-mono)'],
   			prompt: ['var(--font-prompt)'],
-  			outfit: ['var(--font-outfit)']
+  			outfit: ['var(--font-outfit)'],
+  			poppins: ['var(--font-poppins)']
   		},
   		keyframes: {
   			'accordion-down': {
