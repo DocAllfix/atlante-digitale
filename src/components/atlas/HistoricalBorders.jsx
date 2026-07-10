@@ -7,6 +7,7 @@ import { atlasTheme } from "@/lib/atlasTheme";
 import { matchCountryId, countryHasContent } from "@/lib/graph-selectors";
 
 const translationCache = new Map();
+const geoJsonCache = new Map(); // url → dati GeoJSON già parsati (i file sono bundlati localmente)
 const _allCountries = LABELS.filter((l) => l.type === "country");
 const _russia = _allCountries.find((l) => l.name === "Russia");
 const COUNTRY_LABELS = _russia
@@ -151,10 +152,16 @@ export default function HistoricalBorders({ geoJsonUrl, showLabels, darkMode, mo
       setTranslations(null);
       return;
     }
+    if (geoJsonCache.has(geoJsonUrl)) {
+      setData(geoJsonCache.get(geoJsonUrl));
+      setLoadedUrl(geoJsonUrl);
+      return;
+    }
     let cancelled = false;
     fetch(geoJsonUrl)
       .then((res) => res.json())
       .then((json) => {
+        geoJsonCache.set(geoJsonUrl, json);
         if (!cancelled) {
           setData(json);
           setLoadedUrl(geoJsonUrl);
@@ -180,13 +187,16 @@ export default function HistoricalBorders({ geoJsonUrl, showLabels, darkMode, mo
     setTranslations(result);
   }, [data, showLabels, loadedUrl]);
 
+  // Il bbox di ogni feature dipende solo dai dati (non dallo zoom né
+  // dall'highlight): calcolarlo una sola volta per dataset evita di rifare il
+  // walk ricorsivo delle coordinate a ogni tick di zoom.
+  const featuresWithBBox = useMemo(() => {
+    if (!data) return [];
+    return data.features.map((f) => ({ feature: f, bbox: getFeatureBBox(f) }));
+  }, [data]);
+
   const labels = useMemo(() => {
     if (!data || !showLabels || !translations || zoom < 3 || zoom >= 6) return [];
-
-    const featuresWithBBox = data.features.map((f) => ({
-      feature: f,
-      bbox: getFeatureBBox(f),
-    }));
 
     const seenNames = new Set();
     const result = [];
@@ -208,15 +218,14 @@ export default function HistoricalBorders({ geoJsonUrl, showLabels, darkMode, mo
     }
 
     return result;
-  }, [data, showLabels, translations, zoom]);
+  }, [featuresWithBBox, showLabels, translations, zoom]);
 
   const highlightedFeatureNames = useMemo(() => {
-    if (!data || !highlightedCountryNames?.size) return new Set();
-    const fwb = data.features.map((f) => ({ feature: f, bbox: getFeatureBBox(f) }));
+    if (!highlightedCountryNames?.size) return new Set();
     const result = new Set();
     for (const label of COUNTRY_LABELS) {
       if (!highlightedCountryNames.has(label.name)) continue;
-      for (const { feature, bbox } of fwb) {
+      for (const { feature, bbox } of featuresWithBBox) {
         if (label.lat < bbox.minLat || label.lat > bbox.maxLat || label.lng < bbox.minLng || label.lng > bbox.maxLng) continue;
         if (pointInFeature(label.lat, label.lng, feature)) {
           result.add(getFeatureName(feature));
@@ -225,7 +234,7 @@ export default function HistoricalBorders({ geoJsonUrl, showLabels, darkMode, mo
       }
     }
     return result;
-  }, [data, highlightedCountryNames]);
+  }, [featuresWithBBox, highlightedCountryNames]);
 
   const highlightKey = useMemo(() => [...highlightedFeatureNames].sort().join(","), [highlightedFeatureNames]);
 

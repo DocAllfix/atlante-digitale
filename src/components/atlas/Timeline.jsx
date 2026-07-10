@@ -36,6 +36,8 @@ export default function Timeline({ activePeriod, onPeriodChange, darkMode, isOpe
           isOpen ? "left-36" : "left-0"
         }`}
         title="Linea Temporale"
+        aria-label={isOpen ? "Chiudi la linea temporale" : "Apri la linea temporale"}
+        aria-expanded={isOpen}
       >
         <Hourglass className="w-7 h-7" />
       </button>
@@ -59,6 +61,8 @@ export default function Timeline({ activePeriod, onPeriodChange, darkMode, isOpe
                 <button
                   onClick={() => toggleCentury(century)}
                   className="flex items-center w-full px-4 py-2.5 text-left group"
+                  aria-expanded={isExpanded}
+                  aria-label={`Secolo ${century}`}
                 >
                   {isExpanded ? (
                     <ChevronDown className={`w-3.5 h-3.5 ${t.chevron} mr-2 flex-shrink-0`} />
@@ -78,6 +82,8 @@ export default function Timeline({ activePeriod, onPeriodChange, darkMode, isOpe
                           key={period.id}
                           onClick={() => onPeriodChange(period)}
                           className="flex items-center w-full py-1.5 group"
+                          aria-current={isActive ? "true" : undefined}
+                          aria-label={`Periodo ${period.label}`}
                         >
                           <span
                             className={`text-sm transition-colors ${

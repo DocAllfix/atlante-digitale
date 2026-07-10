@@ -27,10 +27,10 @@ export const TIME_PERIODS = [
 
 export const CENTURIES = [1600, 1700, 1800, 1900, 2000];
 
-const MODERN_URL =
-  "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json";
-const HISTORICAL_BASE =
-  "https://raw.githubusercontent.com/aourednik/historical-basemaps/master/geojson";
+// Confini bundlati localmente in public/geo (vedi public/geo/CREDITS.txt per la
+// provenienza) — nessuna dipendenza runtime da GitHub, cambi di periodo istantanei.
+const MODERN_URL = "/geo/countries.geo.json";
+const HISTORICAL_BASE = "/geo";
 
 export function getGeoJsonUrl(period) {
   if (!period || period.geoYear === null) return MODERN_URL;

@@ -68,6 +68,7 @@ export default function ZoomableImage({ src, alt, className, imgClassName, child
           onClick={(e) => { e.stopPropagation(); setZoomed(false); setPos({ x: 0, y: 0 }); }}
           className="absolute top-2 left-2 z-50 flex items-center justify-center w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white hover:bg-black/80 transition-all"
           title="Riduci"
+          aria-label="Riduci lo zoom dell'immagine"
         >
           <X className="w-4 h-4" />
         </button>

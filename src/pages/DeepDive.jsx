@@ -122,6 +122,7 @@ export default function DeepDive() {
           onClick={() => setDarkMode(!darkMode)}
           className={`flex items-center justify-center w-9 h-9 rounded-lg ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-200`}
           title={darkMode ? "Modalità Chiara" : "Modalità Scura"}
+          aria-label={darkMode ? "Passa alla modalità chiara" : "Passa alla modalità scura"}
         >
           {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </button>

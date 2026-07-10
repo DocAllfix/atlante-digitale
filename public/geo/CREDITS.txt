@@ -1,0 +1,5 @@
+Confini storici — historical-basemaps (aourednik), CC0 / dominio pubblico
+https://github.com/aourednik/historical-basemaps
+
+Confini moderni — world.geo.json (johan), MIT
+https://github.com/johan/world.geo.json

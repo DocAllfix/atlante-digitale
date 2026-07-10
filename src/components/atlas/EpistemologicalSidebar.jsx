@@ -44,6 +44,8 @@ export default function EpistemologicalSidebar({
         className={`absolute bottom-20 z-[1001] flex items-center justify-center w-10 h-10 rounded-l-lg font-outfit ${t.buttonBg} backdrop-blur-md border border-r-0 ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-300 shadow-lg`}
         style={{ right: isOpen ? `${width}px` : 0 }}
         title={isOpen ? "Riduci filtri" : "Espandi filtri"}
+        aria-label={isOpen ? "Riduci il pannello filtri" : "Espandi il pannello filtri"}
+        aria-expanded={isOpen}
       >
         {isOpen ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
       </button>
@@ -77,6 +79,7 @@ export default function EpistemologicalSidebar({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cerca autore o città…"
+              aria-label="Cerca autore o città"
               className={`w-full pl-7 pr-2 py-1.5 text-sm rounded-md ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.periodInactive} placeholder:opacity-50 focus:outline-none focus:ring-1 focus:ring-amber-400/40`}
             />
           </div>
@@ -105,6 +108,9 @@ export default function EpistemologicalSidebar({
                 key={theme.id}
                 onClick={() => onToggleTheme(theme.id)}
                 className="flex items-center w-full px-4 py-2.5 text-left group"
+                role="checkbox"
+                aria-checked={isActive}
+                aria-label={`Tema: ${theme.label}`}
               >
                 <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${
                   isActive
@@ -145,8 +151,9 @@ export default function EpistemologicalSidebar({
                   </button>
                   <button
                     onClick={() => onRemoveFavorite(authorId)}
-                    className={`px-2 py-2 ${t.periodInactive} ${t.periodHover} opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0`}
+                    className={`px-2 py-2 ${t.periodInactive} ${t.periodHover} opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity flex-shrink-0`}
                     title="Rimuovi dai preferiti"
+                    aria-label={`Rimuovi ${a.name} dai preferiti`}
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>

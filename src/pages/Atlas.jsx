@@ -245,6 +245,7 @@ export default function Atlas() {
       className={`relative h-screen w-full overflow-hidden ${darkMode ? "" : "atlas-light"} ${isEpist && epSidebarOpen ? "epist-sidebar-open" : ""}`}
       style={{ "--sidebar-w": isEpist && epSidebarOpen ? `${sidebarWidth}px` : "0px" }}
     >
+      <a href="#atlas-controls" className="skip-link">Vai ai controlli della mappa</a>
       <WorldMap
         activePeriod={activePeriod}
         darkMode={darkMode}
@@ -265,6 +266,7 @@ export default function Atlas() {
             onClick={() => setPlaying((v) => !v)}
             className={`flex items-center gap-2 px-3 h-11 rounded-lg ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-200 shadow-lg text-sm`}
             title={playing ? "Ferma l'animazione" : "Anima i confini nel tempo"}
+            aria-label={playing ? "Ferma l'animazione dei confini" : "Anima i confini nel tempo"}
           >
             {playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
             {playing ? "Pausa" : "Anima confini"}
@@ -299,13 +301,13 @@ export default function Atlas() {
       )}
 
       {/* Barra superiore sinistra: titolo + toggle */}
-      <div className="absolute top-4 left-4 z-[1001] flex flex-col gap-2 font-outfit">
+      <div id="atlas-controls" className="absolute top-4 left-4 z-[1001] flex flex-col gap-2 font-outfit">
         <a href="/" className={`text-sm font-bold font-prompt ${t.centuryText} no-underline`}>Chronos Atlas</a>
         <div className={`flex rounded-lg overflow-hidden border ${t.buttonBorder} ${t.buttonBg} backdrop-blur-md shadow-lg text-xs`}>
-          <button onClick={() => isEpist && toggleMode()} className={`flex items-center gap-1.5 px-3 py-2 transition-colors ${!isEpist ? "bg-amber-400/20 " + t.centuryText : `${t.buttonText} ${t.buttonHoverBg}`}`} title="Sfoglia la geografia storica">
+          <button onClick={() => isEpist && toggleMode()} className={`flex items-center gap-1.5 px-3 py-2 transition-colors ${!isEpist ? "bg-amber-400/20 " + t.centuryText : `${t.buttonText} ${t.buttonHoverBg}`}`} title="Sfoglia la geografia storica" aria-pressed={!isEpist}>
             <Globe className="w-4 h-4" /> Esplora mappa
           </button>
-          <button onClick={() => !isEpist && toggleMode()} className={`flex items-center gap-1.5 px-3 py-2 transition-colors ${isEpist ? "bg-amber-400/20 " + t.centuryText : `${t.buttonText} ${t.buttonHoverBg}`}`} title="Mostra autori, opere e temi">
+          <button onClick={() => !isEpist && toggleMode()} className={`flex items-center gap-1.5 px-3 py-2 transition-colors ${isEpist ? "bg-amber-400/20 " + t.centuryText : `${t.buttonText} ${t.buttonHoverBg}`}`} title="Mostra autori, opere e temi" aria-pressed={isEpist}>
             <Layers className="w-4 h-4" /> Contenuti
           </button>
         </div>
@@ -328,6 +330,7 @@ export default function Atlas() {
         className={`absolute top-4 z-[1001] flex items-center justify-center w-12 h-12 rounded-l-lg ${t.buttonBg} backdrop-blur-md border border-r-0 ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-300 shadow-lg`}
         style={{ right: isEpist && epSidebarOpen ? `${sidebarWidth + 16}px` : "16px" }}
         title={darkMode ? "Modalità Chiara" : "Modalità Scura"}
+        aria-label={darkMode ? "Passa alla modalità chiara" : "Passa alla modalità scura"}
       >
         {darkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
       </button>
@@ -339,6 +342,7 @@ export default function Atlas() {
           className={`absolute bottom-4 z-[1001] flex items-center gap-2 px-3 h-11 rounded-l-lg ${t.buttonBg} backdrop-blur-md border border-r-0 ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-300 shadow-lg text-sm font-outfit`}
           style={{ right: isEpist && epSidebarOpen ? `${sidebarWidth + 16}px` : "16px" }}
           title="Chiudi le schede"
+          aria-label="Chiudi le schede aperte"
         >
           <XCircle className="w-5 h-5" /> Chiudi
         </button>

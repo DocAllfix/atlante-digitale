@@ -181,6 +181,7 @@ function CollageLayout({ node, darkMode, isActive }) {
             <button
               onClick={() => setLightbox(null)}
               className="absolute top-4 right-4 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white hover:bg-black/80 transition-all"
+              aria-label="Chiudi immagine a schermo intero"
             >
               <X className="w-5 h-5" />
             </button>
@@ -267,6 +268,7 @@ function GridLayout({ node, darkMode, isActive }) {
             <button
               onClick={() => setLightbox(null)}
               className="absolute top-4 right-4 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white hover:bg-black/80 transition-all"
+              aria-label="Chiudi immagine a schermo intero"
             >
               <X className="w-5 h-5" />
             </button>

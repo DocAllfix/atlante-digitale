@@ -26,6 +26,8 @@ export default function InfoHotspot({ hotspot, darkMode }) {
         onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
         className={`relative flex items-center justify-center w-6 h-6 rounded-full ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} text-amber-300 shadow-lg transition-all duration-200 hover:scale-110`}
         title={title}
+        aria-label={`Informazioni: ${title}`}
+        aria-expanded={open}
       >
         {!open && (
           <span
@@ -48,7 +50,8 @@ export default function InfoHotspot({ hotspot, darkMode }) {
           >
             <div className="flex items-start justify-between gap-2 mb-1">
               <h4 className={`text-[11px] font-bold ${t.centuryText} font-prompt uppercase tracking-wide leading-tight`}>{title}</h4>
-              <button onClick={() => setOpen(false)} className={`${t.buttonText} hover:opacity-70 flex-shrink-0`}>
+              <button onClick={() => setOpen(false)} className={`${t.buttonText} hover:opacity-70 flex-shrink-0`} aria-label="Chiudi">
+
                 <X className="w-3 h-3" />
               </button>
             </div>

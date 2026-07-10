@@ -108,6 +108,7 @@ function Item({ entry, align }) {
 export default function Dispositivo() {
   return (
     <div className="min-h-screen w-full bg-[#070a12] text-amber-50 font-outfit">
+      <a href="#dispositivo-timeline" className="skip-link">Vai alla linea del tempo</a>
       <header className="sticky top-0 z-20 flex items-center justify-between px-4 sm:px-8 py-3 bg-[#070a12]/85 backdrop-blur-md border-b border-white/10">
         <a href="/" className="flex items-center gap-2 text-sm text-amber-300 hover:text-amber-200 transition-colors no-underline">
           <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Foyer</span>
@@ -119,7 +120,7 @@ export default function Dispositivo() {
         <span className="w-10" />
       </header>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-8 py-10">
+      <div id="dispositivo-timeline" className="max-w-3xl mx-auto px-4 sm:px-8 py-10">
         <div className="grid grid-cols-[1fr_auto_1fr] gap-4 pb-4 mb-2 border-b border-white/10 text-[11px] uppercase tracking-widest text-amber-200/60">
           <div className="text-right">{AXIS.cervello}</div>
           <div className="w-3" />
