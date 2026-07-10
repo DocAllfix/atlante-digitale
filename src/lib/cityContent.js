@@ -27,7 +27,7 @@ export const CITY_CONTENT = {
     "2001-2010": {
       title: "Matteo Garrone e il nuovo realismo",
       text: "Dopo Fellini, Roma ritrova un autore: Matteo Garrone. L'imbalsamatore (2002) e Primo amore (2004) esplorano gli abissi del reale. Gomorra (2008), dal libro di Saviano, vince il Grand Prix a Cannes e ridefinisce il cinema italiano.",
-      details: "Il nuovo secolo porta a Roma un cinema di sguardo crudo. Matteo Garrane, dopo il documentario e l'esperienza come aiuto operatore, esordisce nel lungometraggio con L'imbalsamatore (2002), noir metafisico sul margine. Primo amore (2004) indaga l'anoressia maschile. Gomorra (2008), tratto dal libro di Roberto Saviano, racconta la camorra napoletana con lo stile asciutto del reportage: vince il Grand Prix al Festival di Cannes e inaugura la stagione del nuovo realismo italiano.",
+      details: "Il nuovo secolo porta a Roma un cinema di sguardo crudo. Matteo Garrone, dopo il documentario e l'esperienza come aiuto operatore, esordisce nel lungometraggio con L'imbalsamatore (2002), noir metafisico sul margine. Primo amore (2004) indaga l'anoressia maschile. Gomorra (2008), tratto dal libro di Roberto Saviano, racconta la camorra napoletana con lo stile asciutto del reportage: vince il Grand Prix al Festival di Cannes e inaugura la stagione del nuovo realismo italiano.",
       highlights: ["L'imbalsamatore (2002)", "Primo amore (2004)", "Gomorra (2008) — Grand Prix a Cannes", "Nuovo realismo italiano"],
       image: "https://images.unsplash.com/photo-1551446591-ebb8b154501a?w=900&q=80",
     },

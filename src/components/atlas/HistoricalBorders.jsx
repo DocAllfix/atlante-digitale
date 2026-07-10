@@ -4,7 +4,7 @@ import L from "leaflet";
 import { TERRITORY_NAMES_IT } from "@/lib/territoryNames";
 import { LABELS } from "@/lib/italianLabels";
 import { atlasTheme } from "@/lib/atlasTheme";
-import { detectCountry } from "@/lib/epistemologicalContent";
+import { matchCountryId, countryHasContent } from "@/lib/graph-selectors";
 
 const translationCache = new Map();
 const _allCountries = LABELS.filter((l) => l.type === "country");
@@ -102,6 +102,44 @@ export default function HistoricalBorders({ geoJsonUrl, showLabels, darkMode, mo
     fillOpacity: t.hoverOpacity,
   }), [t]);
 
+  // Affordance: glow tenue sui Paesi che HANNO contenuto (solo modalità Contenuti),
+  // così l'utente vede dove può cliccare.
+  const contentStyle = useMemo(() => ({
+    color: t.hoverFill,
+    weight: 1,
+    opacity: 0.45,
+    fillColor: t.hoverFill,
+    fillOpacity: (t.hoverOpacity ?? 0.2) * 0.6,
+  }), [t]);
+
+  const contentFeatureNames = useMemo(() => {
+    if (mode !== "epistemological" || !data) return new Set();
+    const s = new Set();
+    for (const f of data.features) {
+      const name = getFeatureName(f);
+      const cid = matchCountryId(name);
+      if (cid && countryHasContent(cid)) s.add(name);
+    }
+    return s;
+  }, [data, mode]);
+
+  const baseStyleFor = (name) =>
+    highlightedFeatureNames.has(name) ? hoverStyle
+      : contentFeatureNames.has(name) ? contentStyle
+      : borderStyle;
+
+  // In modalità "Esplora mappa" i confini sono linee VISIBILI (per vederli
+  // cambiare nel tempo con l'animazione). In Contenuti restano invisibili con
+  // fill al hover.
+  const geoLineStyle = useMemo(() => ({
+    color: t.labelColor,
+    weight: 0.7,
+    opacity: 0.55,
+    fill: false,
+    fillOpacity: 0,
+  }), [t]);
+  const isGeo = mode !== "epistemological";
+
   useMapEvents({
     zoomend: () => setZoom(map.getZoom()),
   });
@@ -198,20 +236,22 @@ export default function HistoricalBorders({ geoJsonUrl, showLabels, darkMode, mo
       <GeoJSON
         key={`${loadedUrl}-${mode}-${highlightKey}-${zoom >= 6 ? "hi" : "lo"}`}
         data={data}
-        style={(feature) => ({ ...(highlightedFeatureNames.has(getFeatureName(feature)) ? hoverStyle : borderStyle), interactive: zoom < 6 })}
+        style={(feature) => (isGeo
+          ? { ...geoLineStyle, interactive: false }
+          : { ...baseStyleFor(getFeatureName(feature)), interactive: zoom < 6 })}
         onEachFeature={(feature, layer) => {
           layer.on({
             mouseover: (e) => { if (zoomRef.current < 6) e.target.setStyle(hoverStyle); },
-            mouseout: (e) => { e.target.setStyle(highlightedFeatureNames.has(getFeatureName(feature)) ? hoverStyle : borderStyle); },
+            mouseout: (e) => { e.target.setStyle(baseStyleFor(getFeatureName(feature))); },
             ...(mode === "epistemological" && {
               click: (e) => {
                 if (zoomRef.current >= 6) return;
                 const originalName = getFeatureName(feature);
                 const translatedName = translations ? (translations[originalName] || originalName) : originalName;
-                const country = detectCountry(translatedName) || detectCountry(originalName);
-                if (country && onCountrySelect) {
+                const countryId = matchCountryId(originalName) || matchCountryId(translatedName);
+                if (countryId && countryHasContent(countryId) && onCountrySelect) {
                   const point = map.latLngToContainerPoint(e.latlng);
-                  onCountrySelect({ country, featureName: translatedName, x: point.x, y: point.y });
+                  onCountrySelect({ country: countryId, featureName: translatedName, x: point.x, y: point.y });
                 }
               },
             }),

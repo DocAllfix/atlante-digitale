@@ -93,7 +93,7 @@ export default function DeepDive() {
   if (!content || !n) {
     return (
       <div className={`min-h-screen flex flex-col items-center justify-center ${t.sidebarBg} ${t.periodInactive} font-outfit`}>
-        <a href="/" className={`mb-6 flex items-center gap-2 text-sm ${t.buttonText} ${t.buttonHoverText}`}>
+        <a href="/atlante" className={`mb-6 flex items-center gap-2 text-sm ${t.buttonText} ${t.buttonHoverText}`}>
           <ArrowLeft className="w-4 h-4" /> Torna all'Atlante
         </a>
         <p className="text-lg font-prompt">Approfondimento in fase di allestimento.</p>
@@ -110,7 +110,7 @@ export default function DeepDive() {
     >
       {/* Header */}
       <header className={`absolute top-0 inset-x-0 z-40 flex items-center justify-between px-4 sm:px-8 py-3 ${t.sidebarBg} backdrop-blur-md border-b ${t.sidebarBorder}`}>
-        <a href="/" className={`flex items-center gap-2 text-sm text-amber-300 hover:text-amber-200 transition-colors`}>
+        <a href="/atlante" className={`flex items-center gap-2 text-sm text-amber-300 hover:text-amber-200 transition-colors`}>
           <ArrowLeft className="w-4 h-4" />
           <span className="hidden sm:inline">Torna all'Atlante</span>
         </a>

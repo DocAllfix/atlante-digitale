@@ -30,7 +30,7 @@ export const DEEP_DIVE_CONTENT = {
           `Il regista riminese struttura il proprio discorso visivo <strong>rifiutando la dicotomia tradizionale</strong> tra oggettività storica e soggettività onirica, preferendo operare su una linea di confine porosa dove l'inconscio assume la <em>medesima valenza ontologica</em> della materia tangibile.`,
           `Questo superamento del dogma realista si configura come un atto di <u>insubordinazione linguistica</u> che trova le sue radici nell'esaurimento della spinta propulsiva del Neorealismo storico, di cui Fellini aveva assimilato la grammatica con <strong>Roberto Rossellini</strong> per poi riconvertirne l'istanza etica verso le <span class="text-amber-300 font-semibold">fratture interiori dell'individuo moderno</span>.`,
         ],
-        image: "https://shockwavemagazine.it/wp-content/uploads/2020/01/8-12-fellini-1024x582.jpg",
+        image: "/images/fellini/portrait.jpg",
         caption: "Gli anni della formazione",
         hotspots: [
           { id: "h1a", x: 48, y: 52, title: "Rimini, 1920", description: "Federico Fellini nasce il 20 gennaio 1920 a Rimini, sulla costa adriatica. Il mare, la nebbia e i locali notturni diventeranno motivi ricorrenti del suo cinema." },
@@ -60,7 +60,7 @@ export const DEEP_DIVE_CONTENT = {
           `Il personaggio di <strong>Gelsomina</strong>, con la sua mimica clownesca e la sua aderenza a un sistema di percezione pre-logico, funziona come un <em>detonatore drammaturgico</em> destinato a far collassare le certezze del brutale Zampanò, istituendo una dialettica degli opposti che rimanda alle categorie antropologiche del <u>sacro</u> e del <u>profano</u>.`,
           `In questa fase embrionale si individua già una predilezione per la <span class="text-amber-300 font-semibold">figura dell'inetto e del girovago</span>, archetipi funzionali a un'esplorazione dello spazio che rifugge la linearità per abbracciare una struttura rapsodica basata sull'<strong>erranza pura</strong>.`,
         ],
-        image: "https://hotcorn-cdn.fra1.cdn.digitaloceanspaces.com/wp-content/uploads/sites/2/2023/02/10103910/8%C2%BD_1.jpg",
+        image: "/images/fellini/cinecitta.jpg",
         caption: "La Strada (1954)",
         hotspots: [
           { id: "h3a", x: 35, y: 45, title: "Gelsomina", description: "Giulietta Masina interpreta Gelsomina, il clown triste venduta a Zampanò. Il suo volto diventa l'emblema della poetica felliniana." },
@@ -74,7 +74,7 @@ export const DEEP_DIVE_CONTENT = {
         periodLabel: "Critica",
         layout: "quotes",
         heading: "Voci sulla Strada",
-        sideImage: "https://hotcorn-cdn.fra1.cdn.digitaloceanspaces.com/wp-content/uploads/sites/2/2023/02/10103910/8%C2%BD_1.jpg",
+        sideImage: "/images/fellini/ekberg.jpg",
         quotes: [
           { text: "Un cinema che abbandona la cronaca per farsi poesia antropologica: Gelsomina è l'innocenza ferita che zampanò non sa riconoscere.", source: "Cahiers du Cinéma" },
           { text: "Fellini rompe col neorealismo non per abbandonare il reale, ma per restituirne la dimensione mitica e sacra.", source: "Sight & Sound" },
@@ -157,9 +157,9 @@ export const DEEP_DIVE_CONTENT = {
           `Il mare cessa di essere un fenomeno naturale per trasformarsi in un telo di cellophane, rivendicando la <span class="text-amber-300 font-semibold">menzogna come supremo veicolo di verità artistica</span>. Il colore perde ogni funzione naturalistica per assumere una valenza strettamente <em>espressionista</em>.`,
         ],
         images: [
-          "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=900&q=80",
-          "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=900&q=80",
-          "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=900&q=80",
+          "/images/fellini/trevi.jpg",
+          "/images/fellini/mastroianni.jpg",
+          "/images/fellini/portrait.jpg",
         ],
       },
       // 12 — SPLIT
@@ -174,7 +174,7 @@ export const DEEP_DIVE_CONTENT = {
           `Il testo di Petronio viene sottoposto a una <strong>frammentazione strutturale</strong> che restituisce un mondo alieno e profondamente disturbante, popolato da corpi grotteschi che si muovono in scenografie labirintiche simili a viscere telluriche.`,
           `L'azzeramento della prospettiva rinascimentale in favore di composizioni piatte — simili a <em>mosaici</em> o ad <em>affreschi pompeiani scrostati</em> — attesta la volontà di un cinema della <span class="text-amber-300 font-semibold">distanza assoluta</span>.`,
         ],
-        image: "https://images.unsplash.com/photo-1559664047-30d2e8a5b1c2?w=1400&q=80",
+        image: "/images/fellini/cinecitta.jpg",
         caption: "Fellini Satyricon (1969)",
       },
       // 13 — COLLAGE
@@ -189,9 +189,9 @@ export const DEEP_DIVE_CONTENT = {
           `Il fascismo emerge come una gigantesca messinscena teatrale alimentata dal provincialismo e da un <u>infantilismo cronico</u>, in cui le istituzioni totalitarie si saldano con l'educazione cattolica nel mantenere i cittadini in uno stato di <span class="text-amber-300 font-semibold">minorità perpetua</span>.`,
         ],
         images: [
-          "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=900&q=80",
-          "https://images.unsplash.com/photo-1551446591-ebb8b154501a?w=900&q=80",
-          "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=900&q=80",
+          "/images/fellini/ekberg.jpg",
+          "/images/fellini/trevi.jpg",
+          "/images/fellini/mastroianni.jpg",
         ],
       },
       // 14 — TEXT
@@ -219,7 +219,7 @@ export const DEEP_DIVE_CONTENT = {
           `Il transatlantico <em>Gloria N.</em> solca un mare di plastica che dichiara la propria natura sintetica, trasportando un microcosmo di aristocratici destinato a collassare sotto i colpi della Storia.`,
           `L'inquadratura conclusiva — in cui la macchina da presa arretra svelando la troupe — rivela il cinema come <span class="text-amber-300 font-semibold">l'ultima zattera di salvataggio nell'oceano dell'insensatezza</span>, capace di preservare la bellezza solo attraverso la consapevolezza della propria <strong>natura falsa</strong>.`,
         ],
-        image: "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=1400&q=80",
+        image: "/images/fellini/portrait.jpg",
         caption: "E la nave va (1983)",
       },
       // 16 — COLLAGE
@@ -234,9 +234,9 @@ export const DEEP_DIVE_CONTENT = {
           `L'universo settecentesco appare come un gigantesco carillon funebre dove la carne si confonde con la cera e i manichini, prefigurando la <span class="text-amber-300 font-semibold">reificazione dell'individuo</span> operata dalle società disciplinari.`,
         ],
         images: [
-          "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=900&q=80",
-          "https://images.unsplash.com/photo-1514849302-984523450cf4?w=900&q=80",
-          "https://images.unsplash.com/photo-1499678329028-101435549a4e?w=900&q=80",
+          "/images/fellini/cinecitta.jpg",
+          "/images/fellini/ekberg.jpg",
+          "/images/fellini/trevi.jpg",
         ],
       },
       // 17 — TEXT
@@ -264,7 +264,7 @@ export const DEEP_DIVE_CONTENT = {
           `Il protagonista Ivo Salvini — discendente di Gelsomina ma privato della sua funzione salvifica — si aggira in un mondo assordato dal rumore di fondo della modernità, dove l'unico atto di resistenza risiede nella pratica del <u>silenzio prolungato</u>.`,
           `Fellini chiude il proprio percorso consegnando l'immagine di un pozzo in cui si riflette un astro freddo e indifferente — un <span class="text-amber-300 font-semibold">monito epistemologico</span> che invita a sospendere il frastuono per captare le frequenze di una dimensione altra, edificando una delle cattedrali concettuali più imponenti del <strong>ventesimo secolo</strong>.`,
         ],
-        image: "https://images.unsplash.com/photo-1532978379173-523e16f371f9?w=1400&q=80",
+        image: "/images/fellini/mastroianni.jpg",
         caption: "La voce della luna (1990)",
       },
     ],

@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -171,4 +170,32 @@
   body {
     @apply bg-background text-foreground font-body;
   }
+}
+
+/* Evita il "rimbalzo"/pull-to-refresh che interferisce con la mappa su touch */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* Apertura scheda "a molla" (desktop) e sheet dal basso (mobile) */
+@keyframes card-pop {
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.animate-card-pop { animation: card-pop 0.28s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.animate-sheet-up { animation: sheet-up 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+/* Rispetto della preferenza di movimento ridotto (accessibilità) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .city-dot.blinking { animation: none !important; }
 }
