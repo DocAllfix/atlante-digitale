@@ -302,7 +302,7 @@ export default function Atlas() {
 
       {/* Barra superiore sinistra: titolo + toggle */}
       <div id="atlas-controls" className="absolute top-4 left-4 z-[1001] flex flex-col gap-2 font-outfit">
-        <a href="/" className={`text-sm font-bold font-prompt ${t.centuryText} no-underline`}>Chronos Atlas</a>
+        <a href="/esplora" className={`text-sm font-bold font-prompt ${t.centuryText} no-underline`}>Chronos Atlas</a>
         <div className={`flex rounded-lg overflow-hidden border ${t.buttonBorder} ${t.buttonBg} backdrop-blur-md shadow-lg text-xs`}>
           <button onClick={() => isEpist && toggleMode()} className={`flex items-center gap-1.5 px-3 py-2 transition-colors ${!isEpist ? "bg-amber-400/20 " + t.centuryText : `${t.buttonText} ${t.buttonHoverBg}`}`} title="Sfoglia la geografia storica" aria-pressed={!isEpist}>
             <Globe className="w-4 h-4" /> Esplora mappa

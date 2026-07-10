@@ -33,7 +33,6 @@ export default function Foyer() {
 
       <header className="max-w-6xl mx-auto px-6 pt-16 pb-10">
         <p className={`text-xs uppercase tracking-[0.35em] ${darkMode ? "text-amber-300/70" : "text-amber-800/70"}`}>Chronos Atlas</p>
-        <h1 className="mt-3 font-prompt font-bold text-4xl sm:text-5xl leading-tight">Through the (un)seen</h1>
         <p className={`mt-4 max-w-2xl text-sm sm:text-base ${darkMode ? "text-amber-100/70" : "text-stone-600"}`}>
           Un atlante digitale per la memoria storica, artistica e visuale. Entra da dove
           preferisci: la mappa, un tema, un autore, la linea del tempo. Ogni percorso è

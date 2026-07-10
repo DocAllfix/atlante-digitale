@@ -189,6 +189,18 @@ html, body {
 .animate-card-pop { animation: card-pop 0.28s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .animate-sheet-up { animation: sheet-up 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
 
+/* Richiamo di scroll nella landing e cursore del testo a macchina da scrivere */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+@keyframes caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.animate-scroll-bounce { animation: scroll-bounce 1.6s ease-in-out infinite; }
+.animate-caret { animation: caret-blink 0.9s step-end infinite; }
+
 /* Focus visibile e coerente per la navigazione da tastiera */
 :focus-visible {
   outline: 2px solid #fbbf24;

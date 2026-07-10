@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import PageNotFound from './lib/PageNotFound';
 import ScrollToTop from './components/ScrollToTop';
 // Add page imports here
+import Landing from './pages/Landing';
 import Foyer from './pages/Foyer';
 import Atlas from './pages/Atlas';
 import DeepDive from './pages/DeepDive';
@@ -28,7 +29,8 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
           {/* Add your page Route elements here */}
-          <Route path="/" element={<Foyer />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/esplora" element={<Foyer />} />
           <Route path="/atlante" element={<Atlas />} />
           <Route path="/approfondisci" element={<DeepDive />} />
           <Route path="/aftersun" element={<Aftersun />} />

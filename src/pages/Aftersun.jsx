@@ -26,7 +26,7 @@ export default function Aftersun() {
     <div className="relative h-screen w-full overflow-hidden bg-black font-outfit select-none">
       {/* Header */}
       <header className="absolute top-0 inset-x-0 z-30 flex items-center justify-between px-4 sm:px-8 py-3">
-        <a href="/" className="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors no-underline">
+        <a href="/esplora" className="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors no-underline">
           <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Foyer</span>
         </a>
         <h1 className="font-prompt font-semibold tracking-[0.3em] text-white/90 uppercase text-sm">Aftersun</h1>
