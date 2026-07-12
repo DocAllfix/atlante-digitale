@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { Sun, Moon, Globe, Layers, XCircle, Play, Pause, ChevronLeft, ChevronRight, Route } from "lucide-react";
 import WorldMap from "@/components/atlas/WorldMap";
 import Timeline from "@/components/atlas/Timeline";
@@ -7,6 +7,7 @@ import EntityCard from "@/components/atlas/EntityCard";
 import EpistemologicalSidebar from "@/components/atlas/EpistemologicalSidebar";
 import { TIME_PERIODS } from "@/lib/timePeriods";
 import { atlasTheme } from "@/lib/atlasTheme";
+import { useTheme } from "@/theme/ThemeProvider";
 import { AUTHORS } from "@/data/graph";
 import { HISTORY_IMAGES } from "@/data/historyImages";
 import { AUTHOR_CONTENT } from "@/data/visualCultureContent";
@@ -29,9 +30,7 @@ export default function Atlas() {
   const didInit = useRef(false);
 
   const [activePeriod, setActivePeriod] = useState(TIME_PERIODS[TIME_PERIODS.length - 1]);
-  const [darkMode, setDarkMode] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("atlas-darkmode") || "true"); } catch { return true; }
-  });
+  const { darkMode, setDarkMode } = useTheme();
   const [mode, setMode] = useState("geographic");
   const [path, setPath] = useState([]);           // percorso di navigazione (logica museale)
   const [cardPos, setCardPos] = useState({ x: 300, y: 16 });
@@ -51,7 +50,6 @@ export default function Atlas() {
     } catch { return []; }
   });
   useEffect(() => { localStorage.setItem("atlas-favorites", JSON.stringify(favorites)); }, [favorites]);
-  useEffect(() => { localStorage.setItem("atlas-darkmode", JSON.stringify(darkMode)); }, [darkMode]);
 
   // Animazione dei confini nel tempo (modalità "Esplora mappa").
   useEffect(() => {
@@ -242,7 +240,7 @@ export default function Atlas() {
 
   return (
     <div
-      className={`relative h-screen w-full overflow-hidden ${darkMode ? "" : "atlas-light"} ${isEpist && epSidebarOpen ? "epist-sidebar-open" : ""}`}
+      className={`relative h-screen w-full overflow-hidden ${darkMode ? "bg-black" : "atlas-light"} ${isEpist && epSidebarOpen ? "epist-sidebar-open" : ""}`}
       style={{ "--sidebar-w": isEpist && epSidebarOpen ? `${sidebarWidth}px` : "0px" }}
     >
       <a href="#atlas-controls" className="skip-link">Vai ai controlli della mappa</a>
@@ -301,8 +299,8 @@ export default function Atlas() {
       )}
 
       {/* Barra superiore sinistra: titolo + toggle */}
-      <div id="atlas-controls" className="absolute top-4 left-4 z-[1001] flex flex-col gap-2 font-outfit">
-        <a href="/esplora" className={`text-sm font-bold font-prompt ${t.centuryText} no-underline`}>Chronos Atlas</a>
+      <div id="atlas-controls" className="absolute top-4 left-16 z-[1001] flex flex-col gap-2 font-outfit">
+        <Link to="/esplora" className={`text-sm font-bold font-prompt ${t.centuryText} no-underline`}>Chronos Atlas</Link>
         <div className={`flex rounded-lg overflow-hidden border ${t.buttonBorder} ${t.buttonBg} backdrop-blur-md shadow-lg text-xs`}>
           <button onClick={() => isEpist && toggleMode()} className={`flex items-center gap-1.5 px-3 py-2 transition-colors ${!isEpist ? "bg-amber-400/20 " + t.centuryText : `${t.buttonText} ${t.buttonHoverBg}`}`} title="Sfoglia la geografia storica" aria-pressed={!isEpist}>
             <Globe className="w-4 h-4" /> Esplora mappa

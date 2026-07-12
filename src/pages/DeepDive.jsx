@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { Sun, Moon, ArrowLeft } from "lucide-react";
 import { getDeepDiveContent } from "@/lib/deepDiveContent";
 import { atlasTheme } from "@/lib/atlasTheme";
+import { useTheme } from "@/theme/ThemeProvider";
 import MuseumRoom from "@/components/atlas/MuseumRoom";
 
 
@@ -12,12 +13,7 @@ export default function DeepDive() {
   const period = params.get("period") || "1961-1970";
   const content = getDeepDiveContent(city);
 
-  const [darkMode, setDarkMode] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("atlas-darkmode") || "true"); } catch { return true; }
-  });
-  useEffect(() => {
-    localStorage.setItem("atlas-darkmode", JSON.stringify(darkMode));
-  }, [darkMode]);
+  const { darkMode, setDarkMode } = useTheme();
 
   const t = atlasTheme[darkMode ? "dark" : "light"];
   const nodes = content?.nodes || [];
@@ -93,9 +89,9 @@ export default function DeepDive() {
   if (!content || !n) {
     return (
       <div className={`min-h-screen flex flex-col items-center justify-center ${t.sidebarBg} ${t.periodInactive} font-outfit`}>
-        <a href="/atlante" className={`mb-6 flex items-center gap-2 text-sm ${t.buttonText} ${t.buttonHoverText}`}>
+        <Link to="/atlante" className={`mb-6 flex items-center gap-2 text-sm ${t.buttonText} ${t.buttonHoverText}`}>
           <ArrowLeft className="w-4 h-4" /> Torna all'Atlante
-        </a>
+        </Link>
         <p className="text-lg font-prompt">Approfondimento in fase di allestimento.</p>
       </div>
     );
@@ -106,14 +102,11 @@ export default function DeepDive() {
   return (
     <div
       ref={rootRef}
-      className={`relative h-screen w-full overflow-hidden font-outfit ${darkMode ? "bg-[#050508]" : t.sidebarBg} ${darkMode ? "" : "atlas-light"}`}
+      className={`relative h-screen w-full overflow-hidden font-outfit ${darkMode ? "bg-black" : t.sidebarBg} ${darkMode ? "" : "atlas-light"}`}
     >
       {/* Header */}
       <header className={`absolute top-0 inset-x-0 z-40 flex items-center justify-between px-4 sm:px-8 py-3 ${t.sidebarBg} backdrop-blur-md border-b ${t.sidebarBorder}`}>
-        <a href="/atlante" className={`flex items-center gap-2 text-sm text-amber-300 hover:text-amber-200 transition-colors`}>
-          <ArrowLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Torna all'Atlante</span>
-        </a>
+        <span className="w-9" aria-hidden="true" />
         <div className="text-center">
           <h1 className={`text-sm sm:text-base font-bold ${t.centuryText} font-prompt leading-tight`}>{content.title}</h1>
           <p className={`text-[9px] sm:text-[10px] ${t.headerText} uppercase tracking-[0.2em]`}>{content.subtitle}</p>

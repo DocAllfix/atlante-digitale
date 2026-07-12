@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Riproduzione nativa della pagina "Aftersun" di culturavisuale.it: uno
 // slideshow di 6 pannelli con navigazione a frecce (mouse e tastiera) e
@@ -26,9 +26,7 @@ export default function Aftersun() {
     <div className="relative h-screen w-full overflow-hidden bg-black font-outfit select-none">
       {/* Header */}
       <header className="absolute top-0 inset-x-0 z-30 flex items-center justify-between px-4 sm:px-8 py-3">
-        <a href="/esplora" className="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors no-underline">
-          <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Foyer</span>
-        </a>
+        <span className="w-10" aria-hidden="true" />
         <h1 className="font-prompt font-semibold tracking-[0.3em] text-white/90 uppercase text-sm">Aftersun</h1>
         <span className="w-10" />
       </header>

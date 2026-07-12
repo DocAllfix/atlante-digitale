@@ -1,9 +1,15 @@
 import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { X, Maximize2, Minimize2, GripHorizontal, Volume2, VolumeX, Bookmark, BookmarkCheck, BookOpen, ChevronLeft, Link2, Check } from "lucide-react";
+import { X, Maximize2, Minimize2, GripHorizontal, Volume2, VolumeX, Bookmark, BookmarkCheck, BookOpen, ChevronLeft, ChevronDown, ChevronUp, ChevronRight, Link2, Check, ExternalLink } from "lucide-react";
 import { atlasTheme } from "@/lib/atlasTheme";
 import { useIsMobile } from "@/hooks/use-mobile";
 import RelationChips from "@/components/RelationChips";
+
+// Opere associate (film / videogiochi / opere), mostrate come liste
+// informative dentro il blocco "Scopri i collegamenti".
+const WORK_LABEL = { film: "Film", gioco: "Videogiochi", opera: "Opere" };
+const WORK_ORDER = ["film", "gioco", "opera"];
 
 // Card unica per qualsiasi entità (Paese o autore). Su desktop è un pannello
 // trascinabile che si apre "a molla" dal punto di click; su mobile diventa un
@@ -14,22 +20,46 @@ export default function EntityCard({
   subtitle, content, image, textFallback, relations, darkMode,
   initialX, initialY, onClose, isSaved, onToggleSave, deepDiveHref,
   breadcrumb, onBack, shareUrl,
+  // Opt-in per la "bacheca" della pagina Dispositivo (Atlas non le passa →
+  // comportamento invariato): posizionamento in coordinate di pagina, z-index
+  // dinamico, focus per portare in primo piano, Esc solo sulla scheda in cima,
+  // ed eventuale link esterno (apri in nuova scheda).
+  boardMode = false, zIndex, onFocus, escapeCloses = true, mapLink, pageLink, works,
+  // Trasporto shared-element (opt-in): quando presente, l'immagine è un
+  // motion.img con questo layoutId, così può "arrivare" dall'elemento di
+  // origine (es. il nodo nella parete Dispositivo) con lo stesso layoutId.
+  imageLayoutId,
 }) {
   const isMobile = useIsMobile();
   const [expanded, setExpanded] = useState(false);
+  // In modalità bacheca (più schede aperte insieme) i collegamenti restano
+  // ripiegati finché non li si chiede esplicitamente, per non appesantire la
+  // vista; nella card singola di Atlas restano visibili come sempre.
+  const [showRelations, setShowRelations] = useState(!boardMode);
   const [speaking, setSpeaking] = useState(false);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
   const cardWidth = expanded ? 512 : 320;
-  const [pos, setPos] = useState(() => ({
-    x: Math.min(initialX ?? 288, window.innerWidth - cardWidth - 16),
-    y: Math.min(initialY ?? 16, window.innerHeight - 120),
-  }));
+  const [pos, setPos] = useState(() => (
+    boardMode
+      ? {
+          // Coordinate di pagina: niente clamp al viewport (la scheda può stare
+          // in fondo alla parete e scorre con essa); solo un limite orizzontale.
+          x: Math.min(initialX ?? 288, document.documentElement.scrollWidth - cardWidth - 16),
+          y: initialY ?? 16,
+        }
+      : {
+          x: Math.min(initialX ?? 288, window.innerWidth - cardWidth - 16),
+          y: Math.min(initialY ?? 16, window.innerHeight - 120),
+        }
+  ));
   const [sheetDy, setSheetDy] = useState(0); // trascinamento del bottom-sheet
   const dragRef = useRef(null);
   const rootRef = useRef(null);
   const t = atlasTheme[darkMode ? "dark" : "light"];
   const imgSrc = image || content?.image;
+  const hasRelations = (relations || []).some((g) => g.items?.length > 0);
+  const hasWorks = works?.length > 0;
 
   const toggleSpeech = () => {
     if (speaking) { window.speechSynthesis.cancel(); setSpeaking(false); return; }
@@ -53,11 +83,11 @@ export default function EntityCard({
 
   // Accessibilità: Esc chiude, focus alla card all'apertura.
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onClose?.(); };
+    const onKey = (e) => { if (e.key === "Escape" && escapeCloses) onClose?.(); };
     window.addEventListener("keydown", onKey);
     rootRef.current?.focus?.({ preventScroll: true });
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, escapeCloses]);
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
   // Trascinamento: sposta la card (desktop) o chiude il sheet (mobile, swipe giù).
@@ -70,9 +100,11 @@ export default function EntityCard({
     const dx = e.clientX - dragRef.current.startX;
     const dy = e.clientY - dragRef.current.startY;
     if (isMobile) { setSheetDy(Math.max(0, dy)); return; }
+    const maxX = boardMode ? document.documentElement.scrollWidth - cardWidth - 8 : window.innerWidth - cardWidth - 8;
+    const maxY = boardMode ? document.documentElement.scrollHeight - 60 : window.innerHeight - 60;
     setPos({
-      x: Math.max(0, Math.min(dragRef.current.posX + dx, window.innerWidth - cardWidth - 8)),
-      y: Math.max(0, Math.min(dragRef.current.posY + dy, window.innerHeight - 60)),
+      x: Math.max(0, Math.min(dragRef.current.posX + dx, maxX)),
+      y: Math.max(0, Math.min(dragRef.current.posY + dy, maxY)),
     });
   };
   const onPointerUp = (e) => {
@@ -86,16 +118,17 @@ export default function EntityCard({
 
   const containerClass = isMobile
     ? "fixed inset-x-0 bottom-0 z-[1002] w-full max-h-[82vh] overflow-y-auto rounded-t-2xl animate-sheet-up"
-    : `absolute z-[1002] ${widthClass} max-w-[calc(100vw-1.5rem)] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-lg animate-card-pop`;
+    : `absolute z-[1002] ${widthClass} max-w-[calc(100vw-1.5rem)] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-lg ${imageLayoutId ? "" : "animate-card-pop"}`;
   const containerStyle = isMobile
     ? { transform: sheetDy ? `translateY(${sheetDy}px)` : undefined, transition: dragRef.current ? "none" : "transform .2s ease" }
-    : { left: pos.x, top: pos.y };
+    : { left: pos.x, top: pos.y, zIndex: boardMode ? zIndex : undefined };
 
   return (
     <div
       ref={rootRef}
       role="dialog"
       aria-label={content?.title || subtitle}
+      onPointerDown={() => onFocus?.()}
       tabIndex={-1}
       className={`${containerClass} ${t.sidebarBg} backdrop-blur-md border ${t.sidebarBorder} shadow-2xl focus:outline-none`}
       style={containerStyle}
@@ -142,7 +175,11 @@ export default function EntityCard({
           </button>
         )}
         {imgSrc && (
-          <img src={imgSrc} alt={content?.title || subtitle} loading="lazy" className={`w-full ${isMobile ? "h-44" : imageHeight} object-cover transition-all duration-300`} />
+          imageLayoutId ? (
+            <motion.img layoutId={imageLayoutId} transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }} src={imgSrc} alt={content?.title || subtitle} className={`w-full ${isMobile ? "h-44" : imageHeight} object-cover`} />
+          ) : (
+            <img src={imgSrc} alt={content?.title || subtitle} loading="lazy" className={`w-full ${isMobile ? "h-44" : imageHeight} object-cover transition-all duration-300`} />
+          )
         )}
         <button onClick={onClose} className={`absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-200 shadow-lg`} title="Chiudi" aria-label="Chiudi">
           <X className="w-4 h-4" />
@@ -168,6 +205,16 @@ export default function EntityCard({
           {content?.text || textFallback || "Contenuto in fase di allestimento."}
         </p>
 
+        {boardMode && (hasRelations || hasWorks) && (
+          <button
+            onClick={() => setShowRelations((v) => !v)}
+            className={`flex items-center gap-1 mt-2 text-xs ${t.buttonText} ${t.buttonHoverText} transition-colors`}
+          >
+            {showRelations ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            {showRelations ? "Nascondi collegamenti" : "Scopri i collegamenti"}
+          </button>
+        )}
+
         {expanded && content?.details && (
           <div className="mt-4 pt-4 border-t border-white/10">
             <h4 className={`text-xs font-semibold ${t.headerText} uppercase tracking-widest mb-2`}>Approfondimento</h4>
@@ -189,13 +236,42 @@ export default function EntityCard({
           </div>
         )}
 
-        <RelationChips groups={relations} darkMode={darkMode} />
+        {showRelations && <RelationChips groups={relations} darkMode={darkMode} />}
 
-        {deepDiveHref && (
-          <div className="mt-5 flex justify-end">
-            <button onClick={() => navigate(deepDiveHref)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-200 shadow-lg`}>
-              <BookOpen className="w-4 h-4" /> Entra nel percorso
-            </button>
+        {showRelations && hasWorks && (
+          <div className="mt-4 pt-3 border-t border-white/10 space-y-2.5">
+            {WORK_ORDER.map((type) => {
+              const items = works.filter((w) => w.type === type);
+              if (items.length === 0) return null;
+              return (
+                <div key={type}>
+                  <div className={`text-[10px] font-semibold ${t.headerText} uppercase tracking-widest mb-1`}>{WORK_LABEL[type]}</div>
+                  <div className={`text-sm ${t.periodInactive} font-body`}>
+                    {items.map((w) => `${w.title}${w.year ? ` (${w.year})` : ""}`).join(" · ")}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {(deepDiveHref || mapLink || pageLink) && (
+          <div className="mt-5 flex flex-wrap justify-end gap-2">
+            {pageLink && (
+              <button onClick={() => navigate(pageLink.href)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-200 shadow-lg`}>
+                {pageLink.label || "Vai alla pagina"} <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
+            {mapLink && (
+              <button onClick={() => window.open(mapLink.href, "_blank", "noopener")} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-200 shadow-lg`}>
+                <ExternalLink className="w-4 h-4" /> {mapLink.label || "Approfondisci in mappa"}
+              </button>
+            )}
+            {deepDiveHref && (
+              <button onClick={() => navigate(deepDiveHref)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${t.buttonBg} backdrop-blur-md border ${t.buttonBorder} ${t.buttonText} ${t.buttonHoverText} ${t.buttonHoverBg} transition-all duration-200 shadow-lg`}>
+                <BookOpen className="w-4 h-4" /> Entra nel percorso
+              </button>
+            )}
           </div>
         )}
       </div>

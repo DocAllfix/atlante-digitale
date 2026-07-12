@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, useScroll, useTransform, useSpring, useMotionTemplate, useMotionValueEvent, AnimatePresence } from "framer-motion"
 import { ChevronDown, RotateCcw } from "lucide-react"
+import { useTheme } from "@/theme/ThemeProvider"
 
 // Pagina d'ingresso cinematografica: foto scontornata dell'ambra (fluttuante,
 // sfondo solido dell'app) con scroll-parallax pinned — titolo fermo in basso a
@@ -121,9 +122,7 @@ function TitleBlock({ darkMode, style, fontSize }) {
 }
 
 export default function Landing() {
-  const [darkMode] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("atlas-darkmode") || "true") } catch { return true }
-  })
+  const { darkMode } = useTheme()
   const navigate = useNavigate()
   const heroWrapRef = useRef(null)
   const boxRef = useRef(null)

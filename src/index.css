@@ -197,6 +197,10 @@ html, body {
 }
 .animate-scroll-bounce { animation: scroll-bounce 1.6s ease-in-out infinite; }
 
+/* Cursore-strumento: nasconde il cursore di sistema quando quello custom è
+   attivo (solo desktop con puntatore fine, mai con reduced-motion). */
+.cursor-none, .cursor-none * { cursor: none !important; }
+
 /* Focus visibile e coerente per la navigazione da tastiera */
 :focus-visible {
   outline: 2px solid #fbbf24;
