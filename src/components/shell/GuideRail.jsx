@@ -4,13 +4,13 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { overlay } from "@/motion/variants";
 import { useSound } from "@/audio/SoundProvider";
-import ShellRibbon from "@/components/shell/ribbon/ShellRibbon";
 import RibbonFallback from "@/components/shell/ribbon/RibbonFallback";
-import BackgroundMonitorField from "@/components/shell/ribbon/BackgroundMonitorField";
+import ScreenWall from "@/components/shell/wall/ScreenWall";
 
 // Navigazione globale persistente: un launcher discreto (in alto a sinistra)
-// apre la shell a "ribbon" — una dorsale di schermi in arco (CSS-3D) tra cui
-// scegliere il luogo. Rapida e leggera; con reduced-motion diventa una lista.
+// apre la shell — una parete di monitor in cui le pagine sono schermi
+// cliccabili, accesa da un interruttore power. Con reduced-motion → lista.
+// (La logica "ribbon" è conservata nei moduli ribbon/ per un uso futuro.)
 export default function GuideRail() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -66,12 +66,7 @@ export default function GuideRail() {
             {reduce ? (
               <RibbonFallback currentPath={pathname} onEnter={goTo} />
             ) : (
-              <>
-                <BackgroundMonitorField />
-                {/* Vignettatura lieve: dà stacco all'arco senza spegnere la parete */}
-                <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,0.5) 100%)" }} />
-                <ShellRibbon currentPath={pathname} onEnter={goTo} />
-              </>
+              <ScreenWall currentPath={pathname} onEnter={goTo} />
             )}
           </motion.div>
         )}
