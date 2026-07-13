@@ -1,6 +1,8 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { useReducedMotion } from "framer-motion";
 import { Sun, Moon, Globe, Layers, XCircle, Play, Pause, ChevronLeft, ChevronRight, Route } from "lucide-react";
+import { webglOK } from "@/lib/webgl";
 import WorldMap from "@/components/atlas/WorldMap";
 import Timeline from "@/components/atlas/Timeline";
 import EntityCard from "@/components/atlas/EntityCard";
@@ -19,6 +21,9 @@ import {
   getCountryOfAuthor,
 } from "@/lib/graph-selectors";
 
+// Intro d'ingresso (globo 3D che si srotola) — chunk WebGL lazy, come Dispositivo.
+const GlobeIntro = lazy(() => import("@/components/atlas/intro/GlobeIntro"));
+
 const periodLabelOf = (id) => TIME_PERIODS.find((p) => p.id === id)?.label || id;
 const sameStep = (a, b) =>
   !!a && !!b && a.kind === b.kind &&
@@ -28,6 +33,12 @@ const stepKey = (s) => (s?.kind === "country" ? `c:${s.countryId}:${s.periodId}`
 export default function Atlas() {
   const [searchParams, setSearchParams] = useSearchParams();
   const didInit = useRef(false);
+  const reduce = useReducedMotion();
+
+  // Intro globo→mappa: una volta per sessione, solo con WebGL e movimento pieno.
+  const [showIntro, setShowIntro] = useState(
+    () => webglOK() && !reduce && !sessionStorage.getItem("atlas-globe-intro-seen")
+  );
 
   const [activePeriod, setActivePeriod] = useState(TIME_PERIODS[TIME_PERIODS.length - 1]);
   const { darkMode, setDarkMode } = useTheme();
@@ -255,6 +266,14 @@ export default function Atlas() {
         flyTarget={flyTarget}
         comparePeriod={TIME_PERIODS.find((p) => p.id === comparePeriodId) || null}
       />
+      {showIntro && (
+        <Suspense fallback={null}>
+          <GlobeIntro
+            darkMode={darkMode}
+            onDone={() => { sessionStorage.setItem("atlas-globe-intro-seen", "1"); setShowIntro(false); }}
+          />
+        </Suspense>
+      )}
       <Timeline activePeriod={activePeriod} onPeriodChange={setActivePeriod} darkMode={darkMode} isOpen={timelineOpen} onToggleOpen={() => setTimelineOpen(!timelineOpen)} />
 
       {/* Controlli "Esplora mappa": animazione + confronto */}
