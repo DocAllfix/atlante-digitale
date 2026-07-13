@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { motion, useScroll, useTransform, useSpring, useMotionTemplate, useMotionValueEvent, AnimatePresence } from "framer-motion"
-import { ChevronDown, RotateCcw } from "lucide-react"
+import { motion, useScroll, useTransform, useSpring, useMotionTemplate } from "framer-motion"
+import { ChevronDown } from "lucide-react"
 import { useTheme } from "@/theme/ThemeProvider"
+import IntroEditorialCorridor from "@/components/landing/intro/IntroEditorialCorridor"
 
 // Pagina d'ingresso cinematografica: foto scontornata dell'ambra (fluttuante,
 // sfondo solido dell'app) con scroll-parallax pinned — titolo fermo in basso a
@@ -77,37 +77,6 @@ const SCALE_CURVE_Y = SCALE_CURVE.map((p) => 1 - p[1] * (1 - SCALE_MIN))
 // piccola, per un effetto di leggero parallax "al seguito".
 const TITLE_TRAVEL_VH = 24
 
-const INTRO_TEXT =
-  "Nel 1992 Emilio Garroni apre il suo saggio Estetica. Uno sguardo-attraverso con " +
-  "un'immagine ripresa da Wittgenstein: un insetto imprigionato nell'ambra, il cui intero " +
-  "mondo sensoriale coincide con il mezzo translucido che lo racchiude. Per quell'insetto " +
-  "— come per chiunque guardi — non esiste un vedere puro e immediato: esiste soltanto " +
-  "un guardare-attraverso qualcosa che ci precede e ci condiziona, che sia un mezzo " +
-  "tecnologico, una cultura, una storia. È la stessa scommessa di questo atlante, e del " +
-  "suo titolo, Through the (un)seen: non limitarsi a mostrare ciò che il passato ha " +
-  "lasciato visibile, ma interrogare il mezzo — mappe, confini, musei, discipline — " +
-  "attraverso cui oggi lo vediamo. Ogni scheda di questo atlante è dunque anche un " +
-  "invito a guardare il proprio sguardo."
-
-function CountdownIcon({ active, durationMs, className }) {
-  const size = 18
-  const strokeW = 2
-  const r = (size - strokeW) / 2
-  const c = 2 * Math.PI * r
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className={`shrink-0 -rotate-90 mt-1 ${className}`}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={strokeW} stroke="currentColor" opacity={0.25} />
-      <motion.circle
-        cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={strokeW} stroke="currentColor"
-        strokeDasharray={c}
-        initial={{ strokeDashoffset: 0 }}
-        animate={active ? { strokeDashoffset: c } : { strokeDashoffset: 0 }}
-        transition={{ duration: durationMs / 1000, ease: "linear" }}
-      />
-    </svg>
-  )
-}
-
 function TitleBlock({ darkMode, style, fontSize }) {
   return (
     <motion.div style={style} className="absolute bottom-8 left-6 sm:left-10 z-20">
@@ -123,13 +92,8 @@ function TitleBlock({ darkMode, style, fontSize }) {
 
 export default function Landing() {
   const { darkMode } = useTheme()
-  const navigate = useNavigate()
   const heroWrapRef = useRef(null)
   const boxRef = useRef(null)
-  const textSectionRef = useRef(null)
-  const [textVisible, setTextVisible] = useState(false)
-  const [showButton, setShowButton] = useState(false)
-  const [replay, setReplay] = useState(0)
   const [maxTranslate, setMaxTranslate] = useState(0) // percentuale, calcolata a runtime
 
   const reduceMotion = typeof window !== "undefined" &&
@@ -206,37 +170,6 @@ export default function Landing() {
   const titleFontSpring = useSpring(titleFontRaw, { stiffness: 20, damping: 16, mass: 1 })
   const titleFontSize = useMotionTemplate`clamp(30px, ${titleFontSpring}vw, 170px)`
 
-  // La dissolvenza del testo è agganciata allo scroll della sezione stessa
-  // (non a un timer), così appare esattamente mentre la scorri fino a
-  // quella posizione, mai prima e mai già "pronta" all'arrivo.
-  const { scrollYProgress: textScrollProgress } = useScroll({
-    target: textSectionRef,
-    offset: ["start 0.85", "start 0.4"],
-  })
-  const textOpacity = useTransform(textScrollProgress, [0, 1], [0, 1])
-
-  // Testo in dissolvenza classica: resta fisso per qualche secondo per
-  // favorire la lettura, poi viene sostituito dal pulsante.
-  const TEXT_READ_DELAY = 15000
-  const restartText = () => {
-    setShowButton(false)
-    setReplay((r) => r + 1)
-  }
-
-  // Il countdown/timer parte non appena il titolo raggiunge la sua
-  // posizione di riposo (fine corsa dell'hero), non quando il testo ha
-  // finito di dissolversi in vista — sono due cose separate.
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v >= 0.995) setTextVisible(true)
-  })
-
-  useEffect(() => {
-    if (!textVisible) return
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-    const t = setTimeout(() => setShowButton(true), reduce ? 0 : TEXT_READ_DELAY)
-    return () => clearTimeout(t)
-  }, [textVisible, replay])
-
   const bg = darkMode ? "bg-black text-amber-50" : "bg-[#f7f2e9] text-stone-800"
 
   return (
@@ -283,68 +216,7 @@ export default function Landing() {
         </div>
       )}
 
-      <section
-        id="intro-testo"
-        ref={textSectionRef}
-        style={{ scrollSnapAlign: "start" }}
-        className="relative max-w-4xl mx-auto px-6 min-h-screen"
-      >
-        <AnimatePresence>
-          {!showButton ? (
-            <motion.div
-              key="text"
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.5 }}
-              className="absolute inset-x-0 top-8 sm:top-12 flex items-start justify-center px-6"
-            >
-              <div className="flex items-start gap-3 max-w-4xl">
-                <CountdownIcon
-                  active={textVisible}
-                  durationMs={TEXT_READ_DELAY}
-                  className={darkMode ? "text-amber-200/80" : "text-amber-800/70"}
-                />
-                <motion.p
-                  style={{ opacity: textOpacity }}
-                  className={`text-[18px] sm:text-[22px] leading-relaxed font-body ${darkMode ? "text-amber-50/90" : "text-stone-700"}`}
-                >
-                  {INTRO_TEXT}
-                </motion.p>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="cta"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="absolute inset-x-0 top-8 sm:top-12 flex items-start justify-center gap-3 px-6"
-            >
-              <button
-                onClick={() => navigate("/esplora")}
-                className={`px-8 py-4 rounded-full font-prompt font-semibold text-base tracking-wide border transition-colors ${
-                  darkMode
-                    ? "border-amber-400/40 text-amber-100 hover:bg-amber-400/10"
-                    : "border-amber-800/30 text-amber-900 hover:bg-amber-800/5"
-                }`}
-              >
-                Inizia il tuo percorso →
-              </button>
-              <button
-                onClick={restartText}
-                title="Rileggi il testo"
-                aria-label="Rileggi il testo"
-                className={`flex items-center justify-center w-12 h-12 rounded-full border transition-colors ${
-                  darkMode
-                    ? "border-amber-400/40 text-amber-200 hover:bg-amber-400/10"
-                    : "border-amber-800/30 text-amber-800 hover:bg-amber-800/5"
-                }`}
-              >
-                <RotateCcw className="w-4 h-4" />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
+      <IntroEditorialCorridor />
     </div>
   )
 }
