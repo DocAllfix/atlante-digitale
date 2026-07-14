@@ -170,6 +170,9 @@
 
   body {
     @apply bg-background text-foreground font-body;
+    /* Sfondo di base sempre nero: il sito è dark-first e questo evita un
+       lampo bianco nel vuoto tra una pagina e l'altra (AnimatePresence). */
+    background-color: #000;
   }
 }
 

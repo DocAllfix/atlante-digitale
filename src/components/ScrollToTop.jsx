@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, useNavigationType } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const getHashId = (hash) => {
   const rawId = hash.slice(1);
@@ -11,23 +11,22 @@ const getHashId = (hash) => {
   }
 };
 
+// Solo la navigazione ad ancora (#hash): scrolla all'elemento una volta
+// montato. Il reset a inizio pagina per la navigazione normale è gestito da
+// AnimatedRoutes (App.jsx) a dissolvenza-uscita completata, non qui — farlo
+// al cambio di pathname mostrava per un attimo la pagina uscente "saltare"
+// in cima mentre era ancora visibile in dissolvenza.
 export default function ScrollToTop() {
-  const { pathname, hash } = useLocation();
-  const navigationType = useNavigationType();
+  const { hash } = useLocation();
 
   useEffect(() => {
-    if (navigationType === "POP") return;
-
-    if (hash) {
-      const id = getHashId(hash);
-      const timer = window.setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-      }, 50);
-      return () => window.clearTimeout(timer);
-    }
-
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [pathname, hash, navigationType]);
+    if (!hash) return;
+    const id = getHashId(hash);
+    const timer = window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+    return () => window.clearTimeout(timer);
+  }, [hash]);
 
   return null;
 }

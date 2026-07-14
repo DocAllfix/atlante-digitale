@@ -141,20 +141,12 @@ export default function Landing() {
   const rawScale = useTransform(scrollYProgress, SCALE_CURVE_X, SCALE_CURVE_Y)
   const imageScale = useSpring(rawScale, { stiffness: 55, damping: 20, mass: 0.6 })
 
-  // Il titolo segue l'immagine: stessa curva (stesso istante di partenza,
-  // stesso ritmo), ampiezza minore per un effetto di parallax leggero.
-  // Resta sempre opaco: esce dalla vista per effetto del clip dello
-  // scroll, non sparisce con un fade.
-  const titleCurveY = MOTION_CURVE_FRAC.map((f) => -f * TITLE_TRAVEL_VH)
-  const titleRawY = useTransform(scrollYProgress, MOTION_CURVE_X, titleCurveY)
-  const titleSpringY = useSpring(titleRawY, { stiffness: 60, damping: 22, mass: 0.5 })
-  const titleY = useMotionTemplate`${titleSpringY}vh`
-
-  // Il titolo parte grande (come nei fotogrammi di riferimento, ma un po'
-  // più contenuto) e si "restringe" (morphing) fino alla dimensione
-  // attuale più piccola. Il restringimento parte solo quando la foto non
-  // si vede più (ultimo istante della sua corsa di rivelazione), non
-  // prima.
+  // Il titolo segue l'immagine fin quando questa è ancora in rivelazione
+  // (stessa curva, stesso istante di partenza, ampiezza minore per un
+  // parallax leggero). Da TITLE_FONT_START in poi (la foto ha già finito la
+  // sua corsa) il titolo scatta invece di proseguire in modo progressivo: uno
+  // strappo secco verso la posizione/dimensione finale, non un'ulteriore
+  // deriva morbida — da lì lo scroll successivo va dritto verso la citazione.
   const TITLE_SIZE_START_VW = 7
   const TITLE_SIZE_END_VW = 3.6
   let titleFontStartIndex = 0
@@ -162,13 +154,23 @@ export default function Landing() {
     if (MOTION_CURVE_FRAC[i] < 1) titleFontStartIndex = i
   }
   const TITLE_FONT_START = MOTION_CURVE_X[titleFontStartIndex]
-  const titleFontCurveX = MOTION_CURVE_X.map((x) => TITLE_FONT_START + x * (1 - TITLE_FONT_START))
-  const titleFontCurve = MOTION_CURVE_FRAC.map(
-    (f) => TITLE_SIZE_START_VW + f * (TITLE_SIZE_END_VW - TITLE_SIZE_START_VW)
+  // Scatto: una finestra di scroll molto stretta appena dopo TITLE_FONT_START
+  // (non un singolo punto, altrimenti useTransform non ha un intervallo da
+  // interpolare), niente spring morbido — solo un tween rapido e deciso.
+  const SNAP_END = Math.min(1, TITLE_FONT_START + 0.012)
+
+  const titleCurveY = MOTION_CURVE_FRAC.map((f) => -f * TITLE_TRAVEL_VH)
+  const titleRawY = useTransform(
+    scrollYProgress,
+    [...MOTION_CURVE_X.filter((x) => x < TITLE_FONT_START), TITLE_FONT_START, SNAP_END],
+    [...titleCurveY.slice(0, MOTION_CURVE_X.filter((x) => x < TITLE_FONT_START).length), -TITLE_TRAVEL_VH, -TITLE_TRAVEL_VH]
   )
-  const titleFontRaw = useTransform(scrollYProgress, titleFontCurveX, titleFontCurve)
-  const titleFontSpring = useSpring(titleFontRaw, { stiffness: 20, damping: 16, mass: 1 })
-  const titleFontSize = useMotionTemplate`clamp(30px, ${titleFontSpring}vw, 170px)`
+  const titleSpringY = useSpring(titleRawY, { stiffness: 60, damping: 22, mass: 0.5 })
+  const titleY = useMotionTemplate`${titleSpringY}vh`
+
+  const titleFontRaw = useTransform(scrollYProgress, [TITLE_FONT_START, SNAP_END], [TITLE_SIZE_START_VW, TITLE_SIZE_END_VW])
+  const titleFontSnap = useSpring(titleFontRaw, { stiffness: 260, damping: 26, mass: 0.4 }) // scatto rapido, non più una deriva morbida
+  const titleFontSize = useMotionTemplate`clamp(30px, ${titleFontSnap}vw, 170px)`
 
   const bg = darkMode ? "bg-black text-amber-50" : "bg-[#f7f2e9] text-stone-800"
 

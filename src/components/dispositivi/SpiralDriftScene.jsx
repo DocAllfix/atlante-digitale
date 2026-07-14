@@ -6,12 +6,11 @@ import { layoutDevices, driftBounds } from "@/components/dispositivi/DeviceSpira
 import { CAMERA } from "@/components/dispositivi/dispositiviConfig";
 import DeviceNode from "@/components/dispositivi/DeviceNode";
 import DeviceFocusState from "@/components/dispositivi/DeviceFocusState";
-import RelationOrbit from "@/components/dispositivi/RelationOrbit";
 
 // Scena della deriva: lo scroll (offset 0..1) guida la camera lungo −Z
 // attraverso la corrente; un lieve avvitamento del gruppo dà il senso orbitale.
 // I dispositivi (nodi) scorrono intorno con parallasse; la foschia sfuma i lontani.
-export default function SpiralDriftScene({ onCurrent, barRef, onHover, onHoverEnd, onFocus, focusData, focusActive, onFocusExited, onRelationPick }) {
+export default function SpiralDriftScene({ onCurrent, barRef, onHover, onHoverEnd, onFocus, focusData, focusActive, onFocusExited }) {
   const nodes = useMemo(() => layoutDevices(), []);
   const bounds = useMemo(() => driftBounds(nodes.length), [nodes.length]);
   const scroll = useScroll();
@@ -71,9 +70,6 @@ export default function SpiralDriftScene({ onCurrent, barRef, onHover, onHoverEn
           active={focusActive}
           onExited={onFocusExited}
         />
-      )}
-      {focusData && focusActive && (
-        <RelationOrbit device={focusData.device} onPick={onRelationPick} />
       )}
     </>
   );

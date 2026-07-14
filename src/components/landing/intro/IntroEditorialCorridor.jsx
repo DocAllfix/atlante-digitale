@@ -56,7 +56,14 @@ export default function IntroEditorialCorridor() {
         <LandingTransitionBridge progress={scrollYProgress} />
         <CorridorThread progress={scrollYProgress} />
         {steps.map((node, i) => (
-          <CorridorPlane key={i} index={i} total={steps.length} progress={scrollYProgress} holdToEnd={i === steps.length - 1}>
+          <CorridorPlane
+            key={i}
+            index={i}
+            total={steps.length}
+            progress={scrollYProgress}
+            holdToEnd={i === steps.length - 1}
+            immediate={i === 0}
+          >
             {node}
           </CorridorPlane>
         ))}

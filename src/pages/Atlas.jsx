@@ -35,10 +35,13 @@ export default function Atlas() {
   const didInit = useRef(false);
   const reduce = useReducedMotion();
 
-  // Intro globo→mappa: una volta per sessione, solo con WebGL e movimento pieno.
-  const [showIntro, setShowIntro] = useState(
-    () => webglOK() && !reduce && !sessionStorage.getItem("atlas-globe-intro-seen")
-  );
+  // Intro globo→mappa: a ogni apertura della pagina, solo con WebGL e movimento
+  // pieno. Saltata sui deep-link (?author=/?country=, es. dai collegamenti di
+  // Dispositivo): lì l'intento è vedere subito il contenuto di destinazione,
+  // non un'introduzione — evita anche di sommare un nuovo canvas WebGL pesante
+  // proprio nell'istante in cui si smonta la scena 3D della pagina di provenienza.
+  const hasDeepLink = !!(searchParams.get("author") || searchParams.get("country"))
+  const [showIntro, setShowIntro] = useState(() => webglOK() && !reduce && !hasDeepLink);
 
   const [activePeriod, setActivePeriod] = useState(TIME_PERIODS[TIME_PERIODS.length - 1]);
   const { darkMode, setDarkMode } = useTheme();
@@ -251,7 +254,7 @@ export default function Atlas() {
 
   return (
     <div
-      className={`relative h-screen w-full overflow-hidden ${darkMode ? "bg-black" : "atlas-light"} ${isEpist && epSidebarOpen ? "epist-sidebar-open" : ""}`}
+      className={`fixed inset-0 overflow-hidden ${darkMode ? "bg-black" : "atlas-light"} ${isEpist && epSidebarOpen ? "epist-sidebar-open" : ""}`}
       style={{ "--sidebar-w": isEpist && epSidebarOpen ? `${sidebarWidth}px` : "0px" }}
     >
       <a href="#atlas-controls" className="skip-link">Vai ai controlli della mappa</a>
@@ -270,7 +273,7 @@ export default function Atlas() {
         <Suspense fallback={null}>
           <GlobeIntro
             darkMode={darkMode}
-            onDone={() => { sessionStorage.setItem("atlas-globe-intro-seen", "1"); setShowIntro(false); }}
+            onDone={() => setShowIntro(false)}
           />
         </Suspense>
       )}

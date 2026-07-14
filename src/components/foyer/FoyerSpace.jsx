@@ -83,7 +83,7 @@ export default function FoyerSpace() {
   });
 
   return (
-    <div className="relative h-screen w-full bg-black">
+    <div className="fixed inset-0 bg-black">
       {/* Fallback accessibile: navigazione sempre raggiungibile da tastiera/SR */}
       <nav className="sr-only">
         {PORTALS.map((p) => (

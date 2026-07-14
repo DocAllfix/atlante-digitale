@@ -13,9 +13,9 @@ const SEG_Y = 64;
 const R = 1;
 
 // Tempistica (secondi). Il clock può essere accelerato (skip) moltiplicando dt.
-const ROT_END = 2.1;
-const MORPH_END = 3.5;
-const DONE_AT = 3.7; // breve tenuta sul planisfero prima dell'handoff
+const ROT_END = 1.3;
+const MORPH_END = 2.3;
+const DONE_AT = 2.45; // breve tenuta sul planisfero prima dell'handoff
 
 const CAM_NEAR = 2.6; // globo che riempie
 const CAM_FAR = 4.7; // planisfero intero

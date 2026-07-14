@@ -29,9 +29,12 @@ export default function DispositivoSpace() {
 
   // Click su un nodo-connessione: autore/mappa → Atlante; tema → percorso
   // guidato; dispositivo collegato → ri-focus (swap) senza uscire dalla scena.
+  // Per le due destinazioni che lasciano la pagina (autore/mappa) il pannello
+  // si chiude subito (niente sua propria animazione d'uscita, inutile dato che
+  // l'intera pagina sta già dissolvendo).
   const onRelationPick = (item) => {
-    if (item.kind === "author") navigate(`/atlante?author=${item.id}`);
-    else if (item.kind === "atlas") navigate("/atlante");
+    if (item.kind === "author") { setFocusActive(false); setFocusData(null); navigate(`/atlante?author=${item.id}`); }
+    else if (item.kind === "atlas") { setFocusActive(false); setFocusData(null); navigate("/atlante"); }
     else if (item.kind === "theme") { onReturn(); start(item.id); }
     else if (item.kind === "device") {
       const d = getDevice(item.id);
@@ -61,7 +64,7 @@ export default function DispositivoSpace() {
   const progress = current ? (current.index + 1) / current.total : 0;
 
   return (
-    <div className="relative h-screen w-full bg-black font-outfit">
+    <div className="fixed inset-0 bg-black font-outfit">
       {/* Navigazione accessibile (tastiera / screen reader) */}
       <nav className="sr-only">
         {allDevices().map((d) => (
@@ -89,7 +92,6 @@ export default function DispositivoSpace() {
               focusData={focusData}
               focusActive={focusActive}
               onFocusExited={onFocusExited}
-              onRelationPick={onRelationPick}
             />
           </Suspense>
         </ScrollControls>
@@ -131,7 +133,7 @@ export default function DispositivoSpace() {
       {/* Pannello info del dispositivo in focus */}
       <AnimatePresence>
         {focusActive && focusData && (
-          <SpatialInfoPanel device={focusData.device} onClose={onReturn} />
+          <SpatialInfoPanel device={focusData.device} onClose={onReturn} onPick={onRelationPick} />
         )}
       </AnimatePresence>
     </div>

@@ -79,7 +79,8 @@ export function buildWorldTexture(darkMode) {
   if (cache.has(darkMode)) return cache.get(darkMode);
   const promise = fetch("/geo/countries.geo.json")
     .then((r) => r.json())
-    .then((geojson) => draw(geojson, darkMode));
+    .then((geojson) => draw(geojson, darkMode))
+    .catch((err) => { cache.delete(darkMode); throw err; }); // non tenere in cache un fallimento: riprova al prossimo giro
   cache.set(darkMode, promise);
   return promise;
 }
